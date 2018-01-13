@@ -21,37 +21,38 @@ class Application extends React.Component {
 
   componentDidMount() {
     const { lng, lat, zoom } = this.state;
-    var restaurants = require('./restaurants.json');
-
+    // var restaurants = require('./restaurants.json');
+    var res = require('./restaurants1.json');  
     const map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v9',
       center: [lng, lat],
       zoom: 13
     });
-    // buildLocationList(restaurants); // Initialize the list
+    buildLocationList(res.data); // Initialize the list
     addGeocoder();
     addDrawTools();
     
     
 
-     map.on('load', function () {
-      var res1 = require('./restaurants1.json');
-      map.addLayer({
-        "id": "res1",
-        "type": "symbol",
-        "source": res1,
-        "layout": {
-            "icon-image": "{icon}-15",
-            "text-field": "{name}",
-            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-            "text-offset": [0, 0.6],
-            "text-anchor": "top"
-        }
-      });
-    });
+    map.on('load', function () {
+    
+    // map.addLayer({
+    //   "id": "res1",
+    //   "type": "symbol",
+    //   "source": res,
+    //   "layout": {
+    //       "icon-image": "{icon}-15",
+    //       "text-field": "{name}",
+    //       "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+    //       "text-offset": [0, 0.6],
+    //       "text-anchor": "top"
+    //   }
+    // });
+  });
+    
   map.on('click', function(e) {
-    alert(e.lngLat.lat);
+    // alert(e.lngLat.lat);
 
      // set bbox as 5px reactangle area around clicked point
     var bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]];
@@ -59,14 +60,14 @@ class Application extends React.Component {
 
   });
 
-  restaurants.features.forEach(function(marker, i) {
+  res.data.features.forEach(function(marker, i) {
     var el = document.createElement('div'); // Create an img element for the marker
     el.id = 'marker-' + i;
     el.className = 'marker';
     // Add markers to the map at all points
-    // new mapboxgl.Marker(el, { offset: [-28, -46] })
-    //   .setLngLat(marker.geometry.coordinates)
-    //   .addTo(map);
+    new mapboxgl.Marker(el, { offset: [-28, -46] })
+      .setLngLat(marker.geometry.coordinates)
+      .addTo(map);
 
     el.addEventListener('click', function(e) {
       flyToStore(marker); // Fly to the point
@@ -171,16 +172,11 @@ class Application extends React.Component {
 
     return (
       <div>
-        <div className="inline-block absolute top left mt12 ml12 bg-darken75 color-white z1 py6 px12 round-full txt-s txt-bold">
+        {/*<div className="inline-block absolute top left mt12 ml12 bg-darken75 color-white z1 py6 px12 round-full txt-s txt-bold">
           <div>{`Longitude: ${lng} Latitude: ${lat} Zoom: ${zoom}`}</div>
-        </div>
+        </div>*/}
         <div ref={el => this.mapContainer = el} className="absolute top right left bottom" />
-        <div className="absolute top right left bottom">
-        <fieldset className='with-icon'>
-          <span className='icon search'></span>
-          <input type='text' value='' />
-        </fieldset>
-        </div>
+
       </div>
     );
   }
