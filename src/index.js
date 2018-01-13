@@ -46,7 +46,7 @@ class Application extends React.Component {
     buildLocationList(res.data); // Initialize the list
     addGeocoder();
     addDrawTools();
-
+    
 
 
     map.on('load', function () {
@@ -83,8 +83,9 @@ class Application extends React.Component {
         })));
       });
       // Call this function on initialization
-      // passing an empty array to render an empty state
-      renderListings([]);
+      // pass json data and render all points
+      if (res && res.data)
+        renderListings(res.data.features);
     });
 
     map.on('click', function (e) {
@@ -266,21 +267,25 @@ class Application extends React.Component {
       return uniqueFeatures;
     }
 
-    map.on('moveend', function () {
-      var features = map.queryRenderedFeatures({ layers: ['res1'] });
+    function getFeaturesFromLayer(lyrName) {
+      var features = map.queryRenderedFeatures({ layers: [lyrName] });
 
       if (features) {
-        var uniqueFeatures = getUniqueFeatures(features, "address1");
-        // Populate features for the listing overlay.
-        renderListings(uniqueFeatures);
+          var uniqueFeatures = getUniqueFeatures(features, "address1");
+          // Populate features for the listing overlay.
+          renderListings(uniqueFeatures);
 
-        // Clear the input container
-        filterEl.value = '';
+          // Clear the input container
+          filterEl.value = '';
 
-        // Store the current features in sn `res1` variable to
-        // later use for filtering on `keyup`.
-        restaurants = uniqueFeatures;
+          // Store the current features in sn `res1` variable to
+          // later use for filtering on `keyup`.
+          restaurants = uniqueFeatures;
       }
+    }
+
+    map.on('moveend', function () {
+      getFeaturesFromLayer('res1');
     });
 
     map.on('move', () => {
