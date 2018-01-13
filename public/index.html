@@ -40,7 +40,7 @@
         .listContainer {
           position: absolute;
           left: 0; 
-          width: 100%;
+          width: 50%;
           height: 20rem;
           bottom: 0
         }
@@ -167,12 +167,72 @@
       .mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
         border-bottom-color: #91c949;
       }
+
+      .map-overlay {
+          position: absolute;
+          width: 50%;
+          top: 75%;
+          bottom: 0;
+          /*left: 0;*/
+          font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+          background-color: #fff;
+          max-width: 50%;
+          overflow: hidden;
+          right: 0
+      }
+
+      .map-overlay fieldset {
+          display: none;
+          background: #ddd;
+          border: none;
+          padding: 10px;
+          margin: 0;
+      }
+
+      .map-overlay input {
+          display: block;
+          border: none;
+          width: 100%;
+          border-radius: 3px;
+          padding: 10px;
+          margin: 0;
+      }
+
+      .map-overlay .listing {
+          overflow: auto;
+          max-height: 100%;
+      }
+
+      .map-overlay .listing > * {
+          display: block;
+          padding: 5px 10px;
+          margin: 0;
+      }
+
+      .map-overlay .listing a {
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+          color: #404;
+          text-decoration: none;
+      }
+
+      .map-overlay .listing a:last-child {
+          border: none;
+      }
+
+      .map-overlay .listing a:hover {
+          background: #f0f0f0;
+      }
     </style>
 </head>
 <body>
   <div class='topbar'>Kinetica Top 10 Restaurants</div>
   <div class='map'  id='app'></div>
-  <div class='filter'></div>
+  <div class='map-overlay'>
+      <fieldset>
+          <input id='feature-filter' type='text' placeholder='Filter results by name' />
+      </fieldset>
+      <div id='feature-listing' class='listing'></div>
+  </div>
   <div class='listContainer' >
     <div id='listings' class='listings'></div>
   </div>
