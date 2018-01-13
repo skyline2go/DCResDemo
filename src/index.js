@@ -43,7 +43,6 @@ class Application extends React.Component {
       center: [lng, lat],
       zoom: 13
     });
-    buildLocationList(res.data); // Initialize the list
     addGeocoder();
     addDrawTools();
     
@@ -119,8 +118,8 @@ class Application extends React.Component {
           activeItem[0].classList.remove('active');
         }
 
-        var listing = document.getElementById('listing-' + i);
-        listing.classList.add('active');
+        // var listing = document.getElementById('listing-' + i);
+        // listing.classList.add('active');
       });
     });
 
@@ -155,47 +154,6 @@ class Application extends React.Component {
         .setHTML('<h3>' + currentFeature.properties.name + '</h3>' +
         '<h4>' + currentFeature.properties.address1 + '</h4>')
         .addTo(map);
-    }
-
-    /**
-     * populate location list in the section below
-     * @param {*} data 
-     */
-    function buildLocationList(data) {
-      for (let i = 0; i < data.features.length; i++) {
-        var currentFeature = data.features[i];
-        var prop = currentFeature.properties;
-
-        var listings = document.getElementById('listings');
-        var listing = listings.appendChild(document.createElement('div'));
-        listing.className = 'item';
-        listing.id = 'listing-' + i;
-
-        var link = listing.appendChild(document.createElement('a'));
-        link.href = '#';
-        link.className = 'title';
-        link.dataPosition = i;
-        link.innerHTML = 'propaddress';
-
-        var details = listing.appendChild(document.createElement('div'));
-        details.innerHTML = 'propcity';
-        if (prop.phone) {
-          details.innerHTML += ' &middot; ' + 'propphoneFormatted';
-        }
-
-        // Add rounded distance here
-
-        link.addEventListener('click', function (e) {
-          var clickedListing = data.features[this.dataPosition]; // Update the currentFeature to the store associated with the clicked link
-          flyToStore(clickedListing); // Fly to the point
-          createPopUp(clickedListing); // Close all other popups and display popup for clicked store
-          var activeItem = document.getElementsByClassName('active'); // Highlight listing in sidebar (and remove highlight for all other listings)
-          if (activeItem[0]) {
-            activeItem[0].classList.remove('active');
-          }
-          this.parentNode.classList.add('active');
-        });
-      }
     }
 
     /**

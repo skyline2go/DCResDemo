@@ -26,60 +26,8 @@
       position: absolute;
       left: 0;
       width: 100%;
-      height: 100%-26rem;
-      top: 4rem;
-      bottom: 26rem;
-    }
-    
-    .filter {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 6rem;
-      bottom: 20rem;
-    }
-    
-    .listContainer {
-      position: absolute;
-      left: 0;
-      width: 50%;
-      height: 20rem;
-      bottom: 0
-    }
-    
-    .listings {
-      height: 100%;
-      overflow: auto;
-      padding-bottom: 60px;
-    }
-    
-    .listings .item {
-      display: block;
-      border-bottom: 1px solid #eee;
-      padding: 10px;
-      text-decoration: none;
-    }
-    
-    .listings .item:last-child {
-      border-bottom: none;
-    }
-    
-    .listings .item .title {
-      display: block;
-      color: #00853e;
-      font-weight: 700;
-    }
-    
-    .listings .item .title small {
-      font-weight: 400;
-    }
-    
-    .listings .item.active .title .listings .item .title:hover {
-      color: #8cc63f;
-    }
-    
-    .listings .item.active {
-      background-color: #f8f8f8;
+      height: 26rem;
+      top: 4rem
     }
     
      ::-webkit-scrollbar {
@@ -174,13 +122,13 @@
     
     .map-overlay {
       position: absolute;
-      width: 50%;
-      top: 75%;
+      width: 100%;
+      top: 30rem;
       bottom: 0;
       /*left: 0;*/
       font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
       background-color: #fff;
-      max-width: 50%;
+      max-width: 100%;
       overflow: hidden;
       right: 0
     }
@@ -237,9 +185,6 @@
       <input id='feature-filter' type='text' placeholder='Filter results by name' />
     </fieldset>
     <div id='feature-listing' class='listing'></div>
-  </div>
-  <div class='listContainer'>
-    <div id='listings' class='listings'></div>
   </div>
   <script src='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.js'></script>
 </body>
