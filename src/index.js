@@ -136,6 +136,7 @@ class Application extends React.Component {
       details.innerHTML = 'propcity';
       if (prop.phone) {
         details.innerHTML += ' &middot; ' + 'propphoneFormatted';
+        //test
       }
 
       // Add rounded distance here
