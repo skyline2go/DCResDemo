@@ -1,0 +1,165 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.0227419,
+          38.9010641
+        ]
+      },
+      "properties": {
+        "name": "Del Campo",
+        "address1": "777 I St. NW",
+        "address2": "Washington, DC 20001",
+        "rating": 4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.0386734,
+          38.9008901
+        ]
+      },
+      "properties": {
+        "name": "Equinox",
+        "address1": "818 Connecticut Ave. NW",
+        "address2": "Washington, DC 20006",
+        "rating": 4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.020555,
+          38.8933245
+        ]
+      },
+      "properties": {
+        "name": "Fiola",
+        "address1": "601 Pennsylvania Ave. NW",
+        "address2": "Washington, DC 20004",
+        "rating": 4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.0216124,
+          38.9035074
+        ]
+      },
+      "properties": {
+        "name": "Kinship",
+        "address1": "1015 7th St. NW",
+        "address2": "Washington, DC 20001",
+        "rating": 3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.0381571,
+          38.9101034
+        ]
+      },
+      "properties": {
+        "name": "Komi",
+        "address1": "1509 17th St. NW",
+        "address2": "Washington, DC 20036",
+        "rating": 3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.03656,
+          38.90029
+        ]
+      },
+      "properties": {
+        "name": "The Lafayette",
+        "address1": "800 16th St. NW",
+        "address2": "Washington, DC 20006",
+        "rating": 3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.05157,
+          38.903034
+        ]
+      },
+      "properties": {
+        "name": "Marcel's",
+        "address1": "2401 Pennsylvania Ave. NW",
+        "address2": "Washington, DC 20037",
+        "rating": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.04602,
+          38.909645
+        ]
+      },
+      "properties": {
+        "name": "Obelisk",
+        "address1": "2029 P St. NW",
+        "address2": "Washington, DC 20036",
+        "rating": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.03801,
+          38.90029
+        ]
+      },
+      "properties": {
+        "name": "The Oval Room",
+        "address1": "800 Connecticut Ave. NW",
+        "address2": "Washington, DC 20006",
+        "rating": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.022,
+          38.893326
+        ]
+      },
+      "properties": {
+        "name": "701 Restaurant",
+        "address1": "701 Pennsylvania Ave. NW",
+        "address2": "Washington, DC 20004",
+        "rating": 1
+      }
+    }
+  ]
+}
