@@ -2,9 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from 'mapbox-gl-geocoder';
-import Turf from 'turf';
+import turf from 'turf';
+import turf_circle from '@turf/circle';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-
+// import * as d3 from 'd3';
+// import circleSelector from "./selector.js";
+import Circle from './circle.js';
+import turf_inside from '@turf/inside';
+import turf_helpers from '@turf/helpers';
+import turf_truncate from '@turf/truncate';
+import turf_distance from '@turf/distance';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
@@ -19,6 +26,7 @@ var restaurants = [];
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
+
 
 class Application extends React.Component {
 
@@ -45,8 +53,101 @@ class Application extends React.Component {
     });
     addGeocoder();
     addDrawTools();
-    
+    /** start circle exp */
+// Setup our svg layer that we can manipulate with d3
+    // var container = map.getCanvasContainer()
+    // var svg = d3.select(container).append("svg")
 
+    // var active = true;
+    // var circleControl = new circleSelector(svg)
+    //   .projection(project)
+    //   .inverseProjection(function(a) {
+    //     return map.unproject({x: a[0], y: a[1]});
+    //   })
+    //   .activate(active);
+    
+    // d3.select("#circle").on("click", function() {
+    //   active = !active;
+    //   circleControl.activate(active)
+    //   if(active) {
+    //     map.dragPan.disable();
+    //   } else {
+    //     map.dragPan.enable();
+    //   }
+    //   d3.select(this).classed("active", active)
+    // })
+    
+    // // Add zoom and rotation controls to the map.
+    // map.addControl(new mapboxgl.Navigation());
+    
+    // function project(d) {
+    //   return map.project(getLL(d));
+    // }
+    // function getLL(d) {
+    //   return new mapboxgl.LngLat(+d.lng, +d.lat)
+    // }
+  
+    // d3.csv("dots.csv", function(err, data) {
+    //   //console.log(data[0], getLL(data[0]), project(data[0]))
+    //   var dots = svg.selectAll("circle.dot")
+    //     .data(data)
+      
+    //   dots.enter().append("circle").classed("dot", true)
+    //   .attr("r", 1)
+    //   .style({
+    //     fill: "#0082a3",
+    //     "fill-opacity": 0.6,
+    //     stroke: "#004d60",
+    //     "stroke-width": 1
+    //   })
+    //   .transition().duration(1000)
+    //   .attr("r", 6)
+
+    //   circleControl.on("update", function() {
+    //     svg.selectAll("circle.dot").style({
+    //       fill: function(d) {
+    //         var thisDist = circleControl.distance(d);
+    //         var circleDist = circleControl.distance()
+    //         if(thisDist < circleDist) {
+    //           return "#ff8eec";
+    //         } else {
+    //           return "#0082a3"
+    //         }
+    //       }
+    //     })
+    //   })
+    //   circleControl.on("clear", function() {
+    //     svg.selectAll("circle.dot").style("fill", "#0082a3")
+    //   })
+      
+    //   function render() {
+    //     dots.attr({
+    //       cx: function(d) { 
+    //         var x = project(d).x;
+    //         return x
+    //       },
+    //       cy: function(d) { 
+    //         var y = project(d).y;
+    //         return y
+    //       },
+    //     })
+        
+    //     circleControl.update(svg)
+    //   }
+
+    //   // re-render our visualization whenever the view changes
+    //   map.on("viewreset", function() {
+    //     render()
+    //   })
+    //   map.on("move", function() {
+    //     render()
+    //   })
+
+    //   // render our initial visualization
+    //   render()
+    // })
+
+    /** end circle exp */
 
     map.on('load', function () {
 
@@ -62,6 +163,148 @@ class Application extends React.Component {
           "text-anchor": "top"
         }
       });
+
+      /** add circle layers */
+
+          /** start circle test */
+    // Circle Setup
+
+    // var center = [lng, lat];
+    // var radius = 3;
+    // var units = 'kilometers';
+    // var properties = { foo: 'bar' };
+    // var mapzoom = 12;
+
+    // var myCircle = new Circle(center, radius, {
+    //     units: units,
+    //     zoom: mapzoom,
+    //     properties: properties
+    // });
+
+
+    //   map.addSource('circle-1', {
+    //           type: "geojson",
+    //           data: myCircle.asGeojson(),
+    //           buffer: 1
+    //       });
+
+    //       map.addLayer({
+    //           id: "circle-line",
+    //           type: "line",
+    //           source: "circle-1",
+    //           paint: {
+    //               "line-color": "#fb6a4a",
+    //               "line-width": {
+    //                   stops: [
+    //                       [0, 0.1],
+    //                       [16, 5]
+    //                   ]
+    //               }
+    //           },
+    //           filter: ["==", "$type", "Polygon"]
+    //       }, 'waterway-label')
+
+    //       map.addLayer({
+    //           id: "circle-fill",
+    //           type: "fill",
+    //           source: "circle-1",
+    //           paint: {
+    //               "fill-color": "#fb6a4a",
+    //               "fill-opacity": 0.5
+    //           },
+    //           filter: ["==", "$type", "Polygon"]
+    //       }, 'waterway-label');
+
+    //       map.addLayer({
+    //           id: "circle-control-points",
+    //           type: "circle",
+    //           source: "circle-1",
+    //           paint: {
+    //               "circle-color": "white",
+    //               "circle-radius": {
+    //                   stops: [
+    //                       [0, 6],
+    //                       [4, 10],
+    //                       [18, 12]
+    //                   ]
+    //               },
+    //               "circle-stroke-color": "black",
+    //               "circle-stroke-width": {
+    //                   stops: [
+    //                       [0, 0.1],
+    //                       [8,1],
+    //                       [16,4]
+    //                   ]
+    //               }
+    //           },
+    //           filter: ["all", ["==", "$type", "Point"],
+    //               ["!=", "type", "center"]
+    //           ]
+    //       });
+
+    //       map.addLayer({
+    //           id: "circle-center-point",
+    //           type: "circle",
+    //           source: "circle-1",
+    //           paint: {
+    //               "circle-color": "#fb6a4a",
+    //               "circle-radius": {
+    //                   stops: [
+    //                       [0, 6],
+    //                       [4, 10],
+    //                       [18, 12]
+    //                   ]
+    //               },
+    //               "circle-stroke-color": "black",
+    //               "circle-stroke-width": {
+    //                   stops: [
+    //                       [0, 0.1],
+    //                       [8,1],
+    //                       [16,4]
+    //                   ]
+    //               }
+    //           },
+    //           filter: ["all", ["==", "$type", "Point"],
+    //               ["==", "type", "center"]
+    //           ]
+    //       });
+
+
+      /** end adding circle layers */
+      
+      /** circle test2 */
+
+      // by default disable pan so circle drawing is on 
+      map.dragPan.disable();
+      map.scrollZoom.disable();
+
+      //addToMap
+      map.addSource('circle-2', {
+              type: "geojson",
+              data: null,   // no data in the beginning
+              buffer: 1
+          });
+
+      map.addLayer({
+          id: "circle-line1",
+          type: "line",
+          source: "circle-2",
+          paint: {
+              "line-color": "#fb6a4a"
+          }
+      });
+
+      map.addLayer({
+          id: "circle-fill1",
+          type: "fill",
+          source: "circle-2",
+          paint: {
+              "fill-color": "#fb6a4a",
+              "fill-opacity": 0.5
+          }
+      });
+
+      /** end circle test 2 */
 
       filterEl.addEventListener('keyup', function (e) {
         var value = normalize(e.target.value);
@@ -94,6 +337,19 @@ class Application extends React.Component {
       var bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]];
       // var features = map.queryRenderedFeatures(bbox, { layers: ['restaurants'] });
 
+      var center = [e.lngLat.lng, e.lngLat.lat];
+      var radius = 2;
+      var options = {steps: 60, units: 'kilometers', properties: {foo: 'bar'}};
+      var circle = turf_circle(center, radius, options);
+
+      //addToMap
+      var addToMap = [turf.point(center), circle];
+      map.getSource('circle-2').setData(turf.featureCollection(addToMap));
+      // map.addSource('circle-2', {
+      //         type: "geojson",
+      //         data: null, //turf.featureCollection(addToMap),
+      //         buffer: 1
+      //     });
     });
 
     /**
