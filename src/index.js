@@ -4,6 +4,7 @@ import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from 'mapbox-gl-geocoder';
 import turf from 'turf';
 import turf_circle from '@turf/circle';
+import starRate from './starRate';
 import debounce from 'debounce';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
@@ -290,8 +291,8 @@ class Application extends React.Component {
 
       var popup = new mapboxgl.Popup({ closeOnClick: false })
         .setLngLat(currentFeature.geometry.coordinates)
-        .setHTML('<h3>' + currentFeature.properties.name + '</h3>' +
-        '<h4>' + currentFeature.properties.address1 + '</h4>')
+        .setHTML('<h4>' + currentFeature.properties.name + '</h4>' +
+        '<h5>' + currentFeature.properties.address1 + '</h5>')
         .addTo(map);
     }
 
@@ -305,9 +306,9 @@ class Application extends React.Component {
       if (features.length) {
         features.forEach(function (feature, i) {
           var prop = feature.properties;
-          var item = document.createElement('a');
-          item.href = '#';
-          item.textContent = prop.name + ' (' + prop.address1 + ')';
+          var item = document.createElement('div');
+          // item.href = '#';
+          item.className = 'col-lg-4 mb-4';
           item.dataPosition = i;
           item.addEventListener('mouseover', function () {
             // Highlight corresponding feature on the map
@@ -325,6 +326,22 @@ class Application extends React.Component {
             }
             this.parentNode.classList.add('active');
           });
+
+          var itemCard = document.createElement('div');
+          itemCard.className = 'card h-100';
+          
+          var itemHeader = document.createElement('div');
+          itemHeader.className = 'card-header d-flex justify-content-end';
+          itemHeader.innerHTML = '<div class="mr-auto p-2"><h2>'  + prop.name +  '</h2></div>'+ returnRating(prop.rating);
+          itemCard.appendChild(itemHeader);
+
+          var itemContent = document.createElement('div');
+          itemContent.className = 'card-body';
+          itemContent.innerHTML = '<h3>' + prop.address1 + '<br>' + prop.address2 + '<br>' + feature.geometry.coordinates[1] + ', ' + feature.geometry.coordinates[0] + '</h3>';
+          itemCard.appendChild(itemContent);
+
+          item.appendChild(itemCard);
+
           listingEl.appendChild(item);
         });
 
@@ -341,6 +358,16 @@ class Application extends React.Component {
         // remove features filter
         map.setFilter('res1', ['has', 'name']);
       }
+    }
+
+    function returnRating(rateNum){
+      // return <starRate {...rateNum} ></starRate>;
+      var theRate = '<div class="p-2">';
+      for(var i=0; i<rateNum; i++){
+        theRate += '<Image src="img/star_16.png" />';
+      }
+      theRate += '</div>'
+      return theRate;
     }
 
     function normalize(string) {
