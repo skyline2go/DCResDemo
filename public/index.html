@@ -57,6 +57,10 @@
   <!-- styles for icon -->
   <link href="css/font-awesome.min.css" rel="stylesheet" />
   <style>
+    /** set root font size smaller so all font size can be smaller than default in bootstrap */
+    html {
+      font-size: 8px;
+    }
     .topbar {
       position: absolute;
       width: 100%;
@@ -71,7 +75,7 @@
       position: absolute;
       left: 0;
       width: 100%;
-      height: 26rem;
+      height: 56rem;
       top: 4rem
     }
     
@@ -168,7 +172,7 @@
     .map-overlay {
       position: absolute;
       width: 100%;
-      top: 30rem;
+      top: 60rem;
       bottom: 0;
       /*left: 0;*/
       font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
@@ -220,18 +224,12 @@
     .map-overlay .listing a:hover {
       background: #f0f0f0;
     }
-    /*nav {
-      position: absolute;
-      top: 130px;
-      left: 20px;
-      z-index: 1;
-    }*/
     
     .searchToolbar{
       position: absolute;
-      width: 3rem;
-      height: 3rem;
-      top: 8rem;
+      width: 5rem;
+      height: 5rem;
+      top: 10rem;
       left: 4rem;
       z-index: 20;
     }
@@ -240,26 +238,26 @@
     #clearCircle {
       cursor: pointer;
       background: url("img/recycle.svg");
-      background-size: 2rem 2rem;
-      width: 2rem;
-      height: 2rem
+      background-size: 5rem 5rem;
+      width: 5rem;
+      height: 5rem
     }
 
     #circle {
       cursor: pointer;
       background: url("img/edit_off.svg");
-      background-size: 2rem 2rem;
-      width: 2rem;
-      height: 2rem
+      background-size: 5rem 5rem;
+      width: 5rem;
+      height: 5rem
     }
     
 
     #circle.active {
       /*background-color: rgba(250, 250, 250, 0.9);*/
       background: url("img/edit.svg");
-      background-size: 2rem 2rem;
-      width: 2rem;
-      height: 2rem
+      background-size: 5rem 5rem;
+      width: 5rem;
+      height: 5rem
     }
     
     h2,
@@ -271,10 +269,6 @@
 </head>
 
 <body>
-  <div class='searchToolbar'>
-    <div id="circle" class="active"></div>
-    <div id="clearCircle" class="active"></div>
-  </div>
   <div class='map' id='app'></div>
   <div class='map-overlay'>
     <fieldset>
