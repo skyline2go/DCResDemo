@@ -52,8 +52,7 @@ class Application extends React.Component {
     const map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v9',
-      center: [lng, lat],
-      zoom: 13
+      center: [lng, lat]
     });
     addGeocoder();
     addNavTool();
@@ -74,7 +73,6 @@ class Application extends React.Component {
       });
 
       /** add circle layers */
-
       // by default disable pan so circle drawing is on 
       map.dragPan.disable();
       map.scrollZoom.disable();
@@ -110,14 +108,26 @@ class Application extends React.Component {
       /** circle and clear toolbar */
       cirTool.addEventListener('click', function (e) {
         if ('active' === cirTool.className) {
-          // change to unactive
+          // change to unactivate
+          // set source data as a null geojson object
+          map.getSource('circle-2').setData({
+            type: 'FeatureCollection',
+            features:
+            [{
+              type: 'Feature',
+              properties: {},
+              geometry: null
+            }]
+          });
           cirTool.className = '';
           map.dragPan.enable();
           map.scrollZoom.enable();
         } else {
+          // change to activate
           cirTool.className = 'active';
           map.dragPan.disable();
           map.scrollZoom.disable();
+          
         }
       });
 
@@ -132,8 +142,7 @@ class Application extends React.Component {
             properties: {},
             geometry: null
           }]
-        }
-        );
+        });
       });
       /** end circle and clear toolbar */
 
@@ -155,21 +164,20 @@ class Application extends React.Component {
           return feature.properties.name;
         })));
       });
+
+
       // Call this function on initialization
       // pass json data and render all points
       if (res && res.data)
         renderListings(res.data.features);
 
       /** Add map event listeners */
-      map.on('zoomend', adjustCircle);
-
       map.on('mousedown', onMouseDown);
-    });
 
-    var adjustCircle = function () {
-      console.log('circling');
-      // map.getSource('circle-1').setData(turf.featureCollection(circleBuffer));
-    }
+      // create featureGroup based on all the markers and zoom to that bbox 
+      var bbox = turf_extent(res.data);
+      map.fitBounds(bbox, { padding: 70 });
+    });
 
     var onMousemove = function (e) {
       if (circleCenter) {
@@ -366,11 +374,6 @@ class Application extends React.Component {
         // remove features filter
         map.setFilter('res1', ['has', 'name']);
       }
-
-
-      // create featureGroup based on all the markers and zoom to that bbox 
-      var bbox = turf_extent(res.data);
-      map.fitBounds(bbox, { padding: 70 });
     }
 
     /**
@@ -427,16 +430,6 @@ class Application extends React.Component {
 
     map.on('moveend', function () {
       getFeaturesFromLayer('res1');
-    });
-
-    map.on('move', () => {
-      const { lng, lat } = map.getCenter();
-
-      this.setState({
-        lng: lng.toFixed(4),
-        lat: lat.toFixed(4),
-        zoom: map.getZoom().toFixed(2)
-      });
     });
   }
 
