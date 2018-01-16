@@ -16,6 +16,7 @@
     "mapbox-gl-geocoder": "^2.0.1",
     "react": "^15.5.0",
     "react-dom": "^15.5.0",
-    "turf": "^3.0.14"
+    "turf": "^3.0.14",
+    "turf-extent": "^1.0.4"
   }
 }

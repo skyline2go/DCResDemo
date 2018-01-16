@@ -6,6 +6,8 @@ import turf from 'turf';
 import turf_circle from '@turf/circle';
 import starRate from './starRate';
 import debounce from 'debounce';
+import * as turf_extent from 'turf-extent';
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
@@ -195,8 +197,9 @@ class Application extends React.Component {
       var resInCircle = resFeatures.filter(element => turf.inside(element, circleBuffer) === true);
 
       // update resaurant list for the restaurants in the current circle
-      renderListings(getUniqueFeatures(resInCircle, 'name'));
-      restaurants = getUniqueFeatures(resInCircle, 'name');
+      var uniqueFeatures = getUniqueFeatures(resInCircle, 'name');
+      renderListings(uniqueFeatures);
+      restaurants = uniqueFeatures;
     }
 
     var onMouseUp = function (e) {
@@ -242,14 +245,18 @@ class Application extends React.Component {
     /**
      * Add markers to the map at all points
      */
+    var markerArray = [];
     res.data.features.forEach(function (marker, i) {
       var el = document.createElement('div'); // Create an img element for the marker
       el.id = 'marker-' + i;
       el.className = 'marker';
 
-      new mapboxgl.Marker(el, { offset: [0, 0] })
+      var resMarker = new mapboxgl.Marker(el, { offset: [0, 0] })
         .setLngLat(marker.geometry.coordinates)
         .addTo(map);
+
+      // add marker to marker array
+      markerArray.push(resMarker);
 
       el.addEventListener('click', function (e) {
         flyToStore(marker); // Fly to the point
@@ -263,6 +270,7 @@ class Application extends React.Component {
 
       });
     });
+
 
     function addGeocoder() {
       var geocoder = new MapboxGeocoder({
@@ -329,10 +337,10 @@ class Application extends React.Component {
 
           var itemCard = document.createElement('div');
           itemCard.className = 'card h-100';
-          
+
           var itemHeader = document.createElement('div');
           itemHeader.className = 'card-header d-flex justify-content-end';
-          itemHeader.innerHTML = '<div class="mr-auto p-2"><h2>'  + prop.name +  '</h2></div>'+ returnRating(prop.rating);
+          itemHeader.innerHTML = '<div class="mr-auto p-2"><h2>' + prop.name + '</h2></div>' + returnRating(prop.rating);
           itemCard.appendChild(itemHeader);
 
           var itemContent = document.createElement('div');
@@ -358,12 +366,21 @@ class Application extends React.Component {
         // remove features filter
         map.setFilter('res1', ['has', 'name']);
       }
+
+
+      // create featureGroup based on all the markers and zoom to that bbox 
+      var bbox = turf_extent(res.data);
+      map.fitBounds(bbox, { padding: 70 });
     }
 
-    function returnRating(rateNum){
+    /**
+     * Based on the rateNum return the star(s)
+     * @param {*} rateNum 
+     */
+    function returnRating(rateNum) {
       // return <starRate {...rateNum} ></starRate>;
       var theRate = '<div class="p-2">';
-      for(var i=0; i<rateNum; i++){
+      for (var i = 0; i < rateNum; i++) {
         theRate += '<Image src="img/star_16.png" />';
       }
       theRate += '</div>'
