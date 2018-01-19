@@ -6,7 +6,7 @@ import turf from 'turf';
 import turf_circle from '@turf/circle';
 import debounce from 'debounce';
 import * as turf_extent from 'turf-extent';
-import FilterList from './filterList';
+// import FilterList from './filterList';
 import CircleTool from './circleTool';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
@@ -16,14 +16,6 @@ const layerName = 'lyrRes'; // restaurant layer
 
 var map;
 
-// for list and filtered list
-var filterEl = document.getElementById('feature-filter');
-var listingEl = document.getElementById('feature-listing');
-
-// Holds visible restaurant features for filtering
-var restaurants = [];
-
-
 class Application extends React.Component {
 
   constructor(props: Props) {
@@ -31,6 +23,7 @@ class Application extends React.Component {
     this.state = {
       circleActive: true,
       circleCenter: null,
+      restaurants: [],
       error: false
     };
     this.handleMapUpdate = this.handleMapUpdate.bind(this);
@@ -97,29 +90,8 @@ class Application extends React.Component {
 
       /** end adding circle layer */
 
-      filterEl.addEventListener('keyup', function (e) {
-        var value = normalize(e.target.value);
-
-        // Filter visible features that don't match the input value.
-        var filtered = restaurants.filter(function (feature) {
-          var name = normalize(feature.properties.name);
-          var code = normalize(feature.properties.address1);
-          return name.indexOf(value) > -1 || code.indexOf(value) > -1;
-        });
-
-        // Populate the sidebar with filtered results
-        renderListings(filtered);
-
-        // Set the filter to populate features into the layer.
-        if (map.getLayer(layerName)) {
-          map.setFilter(layerName, ['in', 'address1'].concat(filtered.map(function (feature) {
-            return feature.properties.name;
-          })));
-        }
-      });
-
       if (res && res.data) {
-        renderListings(res.data.features);
+        renderListings(res.data.features, this.listingEl);
       }
 
       /** Add map event listeners */
@@ -164,28 +136,26 @@ class Application extends React.Component {
 
         // update resaurant list for the restaurants in the current circle
         var uniqueFeatures = getUniqueFeatures(resInCircle, 'name');
-        renderListings(uniqueFeatures);
-        restaurants = uniqueFeatures;
+        renderListings(uniqueFeatures, this.listingEl);
+        this.restaurants = uniqueFeatures;
       }
-    }  // end onMousemove
+    }.bind(this);  // end onMousemove
 
-    onMousemove = onMousemove.bind(this);
 
     var onMouseUp = function (e) {
       if (this.state.circleCenter) {
-        this.state.circleCenter = null;
+        this.setState({circleCenter : null});
       }
       // set back cursor
       map.getCanvas().style.cursor = '';
 
-    }
-
-    onMouseUp = onMouseUp.bind(this);
+    }.bind(this);
 
 
     var onMouseDown = function (e) {
 
       if (this.state && !this.state.circleActive) {
+        console.log("not in the circle edit mode!")
         return;
       }
 
@@ -193,15 +163,15 @@ class Application extends React.Component {
       var radius = 0.1;
       var options = { steps: 60, units: 'kilometers', properties: { foo: 'bar' } };
       var circleBuffer = turf_circle(center, radius, options);
-
-      this.state.circleCenter = {
+      
+      this.setState( {circleCenter: {
         "type": "Feature",
         "properties": {},
         "geometry": {
           "type": "Point",
           "coordinates": [e.lngLat.lng, e.lngLat.lat]
         }
-      };
+      }});
       //addToMap
       var addToMap = [turf.point(center), circleBuffer];
       map.getSource('circle-2').setData(turf.featureCollection(addToMap));
@@ -212,9 +182,7 @@ class Application extends React.Component {
 
       // change pointer to crosshair
       map.getCanvas().style.cursor = 'crosshair';
-    };
-
-    onMouseDown = onMouseDown.bind(this);
+    }.bind(this);
 
     /**
      * Add markers to the map at all points
@@ -271,7 +239,7 @@ class Application extends React.Component {
       var popUps = document.getElementsByClassName('mapboxgl-popup');
       if (popUps && popUps[0]) popUps[0].remove();
 
-      var popup = new mapboxgl.Popup({ closeOnClick: false })
+      popup = new mapboxgl.Popup({ closeOnClick: false })
         .setLngLat(currentFeature.geometry.coordinates)
         .setHTML('<h4>' + currentFeature.properties.name + '</h4>' + '<br>' +
         '<h5>' + currentFeature.properties.address1 + '</h5>')
@@ -286,8 +254,12 @@ class Application extends React.Component {
      * populate restaurant list in the bottom right section
      * @param {*} features 
      */
-    function renderListings(features) {
+    function renderListings(features, listingEl) {
       // Clear any existing listings
+      if (!listingEl){
+        console.log ('list is not ready yet');
+        return;
+      }
       listingEl.innerHTML = '';
       if (features.length) {
         features.forEach(function (feature, i) {
@@ -333,21 +305,45 @@ class Application extends React.Component {
         });
 
         // Show the filter input
-        filterEl.parentNode.style.display = 'block';
+        this.filterEl.parentNode.style.display = 'block';
       } else {
         var empty = document.createElement('p');
         empty.textContent = 'Drag the map to populate results';
         listingEl.appendChild(empty);
 
         // Hide the filter input
-        filterEl.parentNode.style.display = 'none';
+        this.filterEl.parentNode.style.display = 'none';
 
         // remove features filter
         if (map.getLayer(layerName)) {
           map.setFilter(layerName, ['has', 'name']);
         }
+
+        
+      this.filterEl.addEventListener('keyup', function (e) {
+        var value = normalize(e.target.value);
+
+        // Filter visible features that don't match the input value.
+        var filtered = this.restaurants.filter(function (feature) {
+          var name = normalize(feature.properties.name);
+          var code = normalize(feature.properties.address1);
+          return name.indexOf(value) > -1 || code.indexOf(value) > -1;
+        });
+
+        // Populate the sidebar with filtered results
+        renderListings(filtered, this.listingEl);
+
+        // Set the filter to populate features into the layer.
+        if (map.getLayer(layerName)) {
+          map.setFilter(layerName, ['in', 'address1'].concat(filtered.map(function (feature) {
+            return feature.properties.name;
+          })));
+        }
+      });
       }
     }
+
+    renderListings = renderListings.bind(this);
 
     /**
      * Based on the rateNum return the star(s)
@@ -392,16 +388,18 @@ class Application extends React.Component {
       if (features) {
         var uniqueFeatures = getUniqueFeatures(features, "name");
         // Populate features for the listing overlay.
-        renderListings(uniqueFeatures);
+        renderListings(uniqueFeatures, this.listingEl);
 
         // Clear the input container
-        filterEl.value = '';
+        this.filterEl.value = '';
 
         // Store the current features in sn `lyrRes` variable to
         // later use for filtering on `keyup`.
-        restaurants = uniqueFeatures;
+        this.restaurants = uniqueFeatures;
       }
     }
+
+    getFeaturesFromLayer = getFeaturesFromLayer.bind(this);
 
     map.on('moveend', function () {
       getFeaturesFromLayer(layerName);
@@ -425,12 +423,12 @@ class Application extends React.Component {
 
       map.dragPan.enable();
       map.scrollZoom.enable();
-      this.state.circleActive = false;
+      this.setState({circleActive:false});
     } else {
       // change to activate
       map.dragPan.disable();
       map.scrollZoom.disable();
-      this.state.circleActive = true;
+      this.setState({circleActive:true});
     }
   }
 
@@ -460,7 +458,12 @@ class Application extends React.Component {
       <div>
         <CircleTool map={map} updateMapByCir={this.handleMapUpdate} updateMapByClear={this.handleMapClear} ></CircleTool>
         <div ref={el => this.mapContainer = el} className="absolute top right left bottom" />
-
+        <div className='map-overlay'>
+          <fieldset>
+            <input ref={fel => this.filterEl = fel}  id='feature-filter' type='text' placeholder='Filter results by name' />
+          </fieldset>
+          <div ref={lel => this.listingEl = lel}  id='feature-listing' className='row'></div>
+        </div>
       </div>
     );
   }
